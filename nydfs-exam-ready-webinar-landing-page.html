@@ -474,64 +474,15 @@
     </footer>
 
     <style>
-        /* Hide HubSpot free-plan branding — CSS layer (immediate, no flicker) */
-        .hbspt-form .hs-form .legal-consent-container + div,
-        .hbspt-form div[data-key*="viralLinks"],
-        .hbspt-form i18n-string[data-key*="viralLinks"],
-        .hbspt-form .sprocket-footer,
-        .hbspt-form .submitted-message + div:last-child a[href*="hubspot"],
-        .hbspt-form a[href*="hubspot.com/free-forms"],
-        .hbspt-form a[href*="hubspot.com"][href*="form"] {
+        /* Hide HubSpot free-plan branding */
+        div[data-application-name="embedded-viral-link-ui"],
+        [data-test-id="viral-link-forms"],
+        [data-test-id="viral-pixel-forms"],
+        #forms-branding-control {
             display: none !important;
-            visibility: hidden !important;
             height: 0 !important;
             overflow: hidden !important;
-            opacity: 0 !important;
         }
     </style>
-
-    <script>
-        // Hide HubSpot free-plan branding — JS layer (catches dynamically injected elements)
-        (function() {
-            function hideHubSpotBranding(root) {
-                if (!root || !root.querySelectorAll) return;
-                // Match any link pointing to HubSpot free forms / branding
-                var selectors = [
-                    'a[href*="hubspot.com"]',
-                    '[data-key*="viralLinks"]',
-                    'i18n-string[data-key*="viralLinks"]',
-                    '.sprocket-footer'
-                ];
-                selectors.forEach(function(sel) {
-                    root.querySelectorAll(sel).forEach(function(el) {
-                        // Walk up to the nearest wrapper div so the whole row disappears
-                        var target = el.closest('.hbspt-form div') || el.parentElement || el;
-                        // Only hide if it looks like branding, not the submit button area
-                        if (target && !target.querySelector('input[type="submit"]')) {
-                            target.style.setProperty('display', 'none', 'important');
-                        }
-                    });
-                });
-            }
-
-            // Run on any DOM change inside the form container
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(m) {
-                    hideHubSpotBranding(m.target);
-                });
-            });
-
-            // Start observing once the form container exists
-            var poll = setInterval(function() {
-                var form = document.querySelector('.hbspt-form');
-                if (form) {
-                    hideHubSpotBranding(form);
-                    observer.observe(form, { childList: true, subtree: true });
-                    clearInterval(poll);
-                }
-            }, 100);
-            setTimeout(function() { clearInterval(poll); }, 15000);
-        })();
-    </script>
 </body>
 </html>
